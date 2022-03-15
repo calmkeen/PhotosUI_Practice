@@ -12,14 +12,19 @@ class ViewModel: ObservableObject {
     @Published  var image : UIImage?
     @Published var showPicker = false
     @Published var source: Picker.Source = .libaray
+    @Published var CameraAlert = false
+    @Published var CameraError: Picker.CameraErrorType?
+    
     
     func showPhotoPicker() {
-        if source == .camera{
-            if !Picker.checkPermissions() {
-                print("there is a no camera")
-                return
+        do {
+            if source == .camera{
+                try Picker.checkPermissions()
             }
+            showPicker = true
+        } catch {
+            CameraAlert = true
+            CameraError = Picker.CameraErrorType(error: error as! Picker.PickerError)
         }
-        showPicker = true
     }
 }
